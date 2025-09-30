@@ -4,6 +4,7 @@ import { Navbar } from './components/layout/Navbar';
 import DashboardPage from './pages/DashboardPage';
 import BuildResumePage from './pages/BuildResumePage';
 import EditProfilePage from './pages/EditProfilePage';
+import SettingsPage from './pages/SettingsPage';
 import InternshipDetailPage from './pages/InternshipDetailPage';
 import InternshipsPage from './pages/InternshipsPage';
 import Index from './pages/Index';
@@ -19,6 +20,7 @@ const InternsDashboard: React.FC = () => {
         <Route path="internships" element={<InternshipsPage />} />
         <Route path="build-resume" element={<BuildResumePage />} />
         <Route path="profile" element={<EditProfilePage />} />
+        <Route path="settings" element={<SettingsPage />} />
         <Route path="internship/:id" element={<InternshipDetailPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
