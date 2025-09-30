@@ -18,17 +18,15 @@ import { StatCard } from '../components/dashboard/StatCard';
 import { InternshipCard } from '../components/dashboard/InternshipCard';
 import { ApplicantCard } from '../components/dashboard/ApplicantCard';
 import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton';
-import { MonthlyApplicationsChart } from '../components/charts/MonthlyApplicationsChart';
-import { HiringFunnelChart } from '../components/charts/HiringFunnelChart';
 import { InternshipDetailsModal } from '../components/InternshipDetailsModal';
+import { ApplicantDetailsModal } from '../components/ApplicantDetailsModal';
+import { NotificationSystem, useNotifications } from '../components/NotificationSystem';
 import { 
   mockStats, 
   mockInternships, 
-  mockApplicants,
-  monthlyApplicationsData,
-  hiringFunnelData
+  mockApplicants
 } from '@/shared/data/mockData';
-import type { DashboardStats, Internship, Applicant } from '../types';
+import type { DashboardStats, Internship, Applicant } from '@/shared/types';
 
 export const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +36,11 @@ export const Dashboard: React.FC = () => {
   const [applicantSearch, setApplicantSearch] = useState('');
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
+  const [isApplicantModalOpen, setIsApplicantModalOpen] = useState(false);
+
+  // Notification system
+  const { notifications, addNotification, markAsRead, removeNotification } = useNotifications();
 
   useEffect(() => {
     // Simulate loading
@@ -61,6 +64,111 @@ export const Dashboard: React.FC = () => {
   const handleInternshipClick = (internship: Internship) => {
     setSelectedInternship(internship);
     setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedInternship(null);
+  };
+
+  const handleApplicantClick = (applicant: Applicant) => {
+    setSelectedApplicant(applicant);
+    setIsApplicantModalOpen(true);
+  };
+
+  const handleCloseApplicantModal = () => {
+    setIsApplicantModalOpen(false);
+    setSelectedApplicant(null);
+  };
+
+  const handleStatusUpdate = (applicantId: string, newStatus: Applicant['status']) => {
+    setApplicants(prevApplicants =>
+      prevApplicants.map(applicant => {
+        if (applicant.id === applicantId) {
+          const updatedApplicant = { 
+            ...applicant, 
+            status: newStatus,
+            // Update contact visibility based on workflow
+            canViewContactDetails: newStatus === 'Hired' || newStatus === 'Offer Accepted',
+            // Add timestamps for workflow tracking
+            ...(newStatus === 'Offered' && { offerSentDate: new Date() }),
+            ...(newStatus === 'Offer Accepted' && { offerResponseDate: new Date() }),
+            ...(newStatus === 'Offer Rejected' && { offerResponseDate: new Date() })
+          };
+
+          // Send notifications based on status change
+          const applicantName = applicant.name;
+          const internshipTitle = applicant.internshipTitle;
+
+          switch (newStatus) {
+            case 'Under Review':
+              addNotification({
+                type: 'application_received',
+                title: 'Application Under Review',
+                message: `${applicantName}'s application for ${internshipTitle} is now under review.`,
+                recipientType: 'company',
+                relatedId: applicantId
+              });
+              break;
+
+            case 'Offered':
+              addNotification({
+                type: 'offer_sent',
+                title: 'Offer Letter Sent',
+                message: `Offer letter sent to ${applicantName} for ${internshipTitle}. Waiting for response.`,
+                recipientType: 'company',
+                relatedId: applicantId
+              });
+              break;
+
+            case 'Offer Accepted':
+              addNotification({
+                type: 'offer_response',
+                title: 'Offer Accepted!',
+                message: `${applicantName} has accepted the offer for ${internshipTitle}. Contact details are now available.`,
+                recipientType: 'company',
+                relatedId: applicantId
+              });
+              break;
+
+            case 'Offer Rejected':
+              addNotification({
+                type: 'offer_response',
+                title: 'Offer Declined',
+                message: `${applicantName} has declined the offer for ${internshipTitle}.`,
+                recipientType: 'company',
+                relatedId: applicantId
+              });
+              break;
+
+            case 'Hired':
+              addNotification({
+                type: 'hire_confirmed',
+                title: 'Candidate Hired!',
+                message: `${applicantName} has been successfully hired for ${internshipTitle}. Welcome to the team!`,
+                recipientType: 'company',
+                relatedId: applicantId
+              });
+              break;
+          }
+
+          return updatedApplicant;
+        }
+        return applicant;
+      })
+    );
+    
+    // Update the selected applicant if it's the same one
+    if (selectedApplicant && selectedApplicant.id === applicantId) {
+      setSelectedApplicant(prev => prev ? { 
+        ...prev, 
+        status: newStatus,
+        canViewContactDetails: newStatus === 'Hired' || newStatus === 'Offer Accepted',
+        ...(newStatus === 'Offered' && { offerSentDate: new Date() }),
+        ...(newStatus === 'Offer Accepted' && { offerResponseDate: new Date() }),
+        ...(newStatus === 'Offer Rejected' && { offerResponseDate: new Date() })
+      } : null);
+    }
   };
 
   if (isLoading) {
@@ -107,26 +215,8 @@ export const Dashboard: React.FC = () => {
         />
       </div>
 
-      {/* Main Content Grid */}
+      {/* Main Content */}
       <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <MonthlyApplicationsChart data={monthlyApplicationsData} />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <HiringFunnelChart data={hiringFunnelData} />
-          </motion.div>
-        </div>
-
         {/* Main Dashboard Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column */}
@@ -213,13 +303,15 @@ export const Dashboard: React.FC = () => {
                     <p className="text-sm text-amber-700 mt-1">
                       Get advanced analytics, priority support, and unlimited postings.
                     </p>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-2 border-amber-300 text-amber-700 hover:bg-amber-200"
-                    >
-                      Learn More
-                    </Button>
+                    <Link to="/pricing?type=company">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-2 border-amber-300 text-amber-700 hover:bg-amber-200"
+                      >
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>
@@ -282,6 +374,7 @@ export const Dashboard: React.FC = () => {
                       key={applicant.id}
                       applicant={applicant}
                       index={index}
+                      onClick={handleApplicantClick}
                     />
                   ))}
                   {filteredApplicants.length === 0 && (
@@ -302,7 +395,22 @@ export const Dashboard: React.FC = () => {
       <InternshipDetailsModal
         internship={selectedInternship}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
+      />
+
+      {/* Applicant Details Modal */}
+      <ApplicantDetailsModal
+        applicant={selectedApplicant}
+        isOpen={isApplicantModalOpen}
+        onClose={handleCloseApplicantModal}
+        onStatusUpdate={handleStatusUpdate}
+      />
+
+      {/* Notification System */}
+      <NotificationSystem
+        notifications={notifications}
+        onMarkAsRead={markAsRead}
+        onRemove={removeNotification}
       />
     </div>
   );

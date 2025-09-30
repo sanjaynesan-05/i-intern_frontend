@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -10,7 +10,8 @@ import {
   ChevronRight,
   Building2,
   Crown,
-  Sparkles
+  Sparkles,
+  BarChart3
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 
@@ -24,6 +25,11 @@ const navigation = [
     name: 'Dashboard',
     href: '/company/dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    name: 'Analytics',
+    href: '/company/analytics',
+    icon: BarChart3,
   },
   {
     name: 'Internships',

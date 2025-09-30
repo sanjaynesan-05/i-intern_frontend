@@ -1,22 +1,28 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   X, 
   MapPin, 
   IndianRupee, 
-  Calendar, 
   Clock, 
   Users, 
   Briefcase,
   CheckCircle,
-  AlertCircle,
-  Building
+  Building,
+  Eye,
+  Edit,
+  Share2,
+  Copy,
+  Mail,
+  MessageCircle,
+  ExternalLink
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 import { formatCurrency, formatDate, getStatusColor } from '@/shared/lib/utils';
-import { Internship } from '../types';
+import { Internship } from '@/shared/types';
 
 interface InternshipDetailsModalProps {
   internship: Internship | null;
@@ -29,7 +35,128 @@ export const InternshipDetailsModal: React.FC<InternshipDetailsModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const navigate = useNavigate();
+  const [isSharing, setIsSharing] = React.useState(false);
+  const [showShareOptions, setShowShareOptions] = React.useState(false);
+  
+  // Reset share options when modal opens/closes
+  React.useEffect(() => {
+    if (!isOpen) {
+      setShowShareOptions(false);
+    }
+  }, [isOpen]);
+  
   if (!internship) return null;
+
+  // Quick Action Handlers
+  const handleViewApplications = () => {
+    // Navigate to applications page for this internship
+    navigate(`/company/applicants?internshipId=${internship.id}`);
+    onClose();
+  };
+
+  const handleEditInternship = () => {
+    // Navigate to edit internship page
+    navigate(`/company/internships/edit/${internship.id}`);
+    onClose();
+  };
+
+  // Enhanced sharing functionality
+  const shareUrl = `${window.location.origin}/internship/${internship.id}`;
+  const shareTitle = `${internship.title} Internship Opportunity`;
+  const shareText = `Check out this ${internship.title} internship at ${internship.location}! Stipend: ₹${internship.stipend}/month for ${internship.duration}.`;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      showNotification('✅ Link copied to clipboard!', 'success');
+      setShowShareOptions(false); // Close share options after action
+    } catch (error) {
+      console.error('Failed to copy link:', error);
+      showNotification('❌ Failed to copy link', 'error');
+    }
+  };
+
+  const handleEmailShare = () => {
+    const subject = encodeURIComponent(shareTitle);
+    const body = encodeURIComponent(`${shareText}\n\nApply here: ${shareUrl}`);
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+    setShowShareOptions(false); // Close share options after action
+  };
+
+  const handleWhatsAppShare = () => {
+    const text = encodeURIComponent(`${shareTitle}\n\n${shareText}\n\nApply here: ${shareUrl}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+    setShowShareOptions(false); // Close share options after action
+  };
+
+  const handleLinkedInShare = () => {
+    const url = encodeURIComponent(shareUrl);
+    const title = encodeURIComponent(shareTitle);
+    const summary = encodeURIComponent(shareText);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`, '_blank');
+    setShowShareOptions(false); // Close share options after action
+  };
+
+  const handleTwitterShare = () => {
+    const text = encodeURIComponent(`${shareTitle}\n\n${shareText}`);
+    const url = encodeURIComponent(shareUrl);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    setShowShareOptions(false); // Close share options after action
+  };
+
+  const handleFacebookShare = () => {
+    const url = encodeURIComponent(shareUrl);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    setShowShareOptions(false); // Close share options after action
+  };
+
+  const handleQuickShareToggle = () => {
+    setShowShareOptions(!showShareOptions);
+  };
+
+  const handleNativeShare = async () => {
+    setIsSharing(true);
+    
+    const shareData = {
+      title: shareTitle,
+      text: shareText,
+      url: shareUrl
+    };
+
+    try {
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        showNotification('✅ Shared successfully!', 'success');
+      } else {
+        // Fallback: copy to clipboard
+        const fullText = `${shareTitle}\n\n${shareText}\n\nApply here: ${shareUrl}`;
+        await navigator.clipboard.writeText(fullText);
+        showNotification('✅ Internship details copied to clipboard!', 'success');
+      }
+      setShowShareOptions(false); // Close share options after action
+    } catch (error) {
+      console.error('Error sharing:', error);
+      showNotification('❌ Sharing failed', 'error');
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const showNotification = (message: string, type: 'success' | 'error') => {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 text-white ${
+      type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    }`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 3000);
+  };
 
   return (
     <AnimatePresence>
@@ -205,15 +332,115 @@ export const InternshipDetailsModal: React.FC<InternshipDetailsModalProps> = ({
                     <Card className="p-4">
                       <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
                       <div className="space-y-2">
-                        <Button className="w-full" size="sm">
-                          View Applicants
+                        <Button 
+                          className="w-full" 
+                          size="sm"
+                          onClick={handleViewApplications}
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Applications
                         </Button>
-                        <Button variant="outline" className="w-full" size="sm">
+                        <Button 
+                          variant="outline" 
+                          className="w-full" 
+                          size="sm"
+                          onClick={handleEditInternship}
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
                           Edit Internship
                         </Button>
-                        <Button variant="outline" className="w-full" size="sm">
-                          Share Internship
-                        </Button>
+                        
+                        {/* Enhanced Share Menu */}
+                        <div className="w-full">
+                          <Button 
+                            variant="outline" 
+                            className="w-full mb-2" 
+                            size="sm"
+                            onClick={handleQuickShareToggle}
+                          >
+                            <Share2 className="w-4 h-4 mr-2" />
+                            Quick Share
+                          </Button>
+                          
+                          {/* Share Options Grid - Only show when toggled */}
+                          {showShareOptions && (
+                            <div className="grid grid-cols-2 gap-2 mt-2 p-2 bg-gray-50 rounded-md border">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleNativeShare}
+                                disabled={isSharing}
+                              >
+                                <Share2 className="w-3 h-3 mr-1" />
+                                {isSharing ? 'Sharing...' : 'System Share'}
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleCopyLink}
+                              >
+                                <Copy className="w-3 h-3 mr-1" />
+                                Copy Link
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleEmailShare}
+                              >
+                                <Mail className="w-3 h-3 mr-1" />
+                                Email
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleWhatsAppShare}
+                              >
+                                <MessageCircle className="w-3 h-3 mr-1" />
+                                WhatsApp
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleLinkedInShare}
+                              >
+                                <ExternalLink className="w-3 h-3 mr-1" />
+                                LinkedIn
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleTwitterShare}
+                              >
+                                <ExternalLink className="w-3 h-3 mr-1" />
+                                Twitter
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto"
+                                onClick={handleFacebookShare}
+                              >
+                                <ExternalLink className="w-3 h-3 mr-1" />
+                                Facebook
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-xs p-2 h-auto text-gray-500"
+                                onClick={handleQuickShareToggle}
+                              >
+                                <X className="w-3 h-3 mr-1" />
+                                Close
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </Card>
 

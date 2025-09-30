@@ -17,7 +17,7 @@ import { Badge } from '@/shared/components/ui/badge';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { formatDate, getStatusColor } from '@/shared/lib/utils';
 import { mockApplicants } from '@/shared/data/mockData';
-import type { Applicant } from '../types';
+import type { Applicant } from '@/shared/types';
 
 export const Applicants: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +75,7 @@ export const Applicants: React.FC = () => {
             <div className="font-semibold text-gray-900">{value}</div>
             <div className="text-sm text-gray-500 flex items-center">
               <Mail className="w-3 h-3 mr-1" />
-              {row.email}
+              {row.canViewContactDetails ? row.email : 'Contact details protected'}
             </div>
           </div>
         </div>

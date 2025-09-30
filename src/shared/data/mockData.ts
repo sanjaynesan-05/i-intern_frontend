@@ -4,6 +4,7 @@ export const mockInternships: Internship[] = [
   {
     id: '1',
     title: 'Frontend Developer Intern',
+    company: 'TechCorp Solutions',
     location: 'Mumbai, Maharashtra',
     stipend: 15000,
     applicantCount: 45,
@@ -13,11 +14,20 @@ export const mockInternships: Internship[] = [
     description: 'Work on modern React applications with our product team.',
     requirements: ['React', 'TypeScript', 'Tailwind CSS'],
     duration: '3 months',
-    type: 'Hybrid'
+    type: 'Hybrid',
+    rating: 4.5,
+    category: 'Technology',
+    level: 'Intermediate',
+    benefits: ['Flexible Hours', 'Learning & Development', 'Team Events'],
+    skills: ['React', 'TypeScript', 'Tailwind CSS'],
+    postedDate: new Date('2024-01-15'),
+    applicants: 45,
+    industry: 'Software Development'
   },
   {
     id: '2',
     title: 'Data Science Intern',
+    company: 'DataFlow Analytics',
     location: 'Bangalore, Karnataka',
     stipend: 20000,
     applicantCount: 32,
@@ -32,6 +42,7 @@ export const mockInternships: Internship[] = [
   {
     id: '3',
     title: 'UI/UX Design Intern',
+    company: 'Design Studio Pro',
     location: 'Delhi, Delhi',
     stipend: 12000,
     applicantCount: 28,
@@ -46,6 +57,7 @@ export const mockInternships: Internship[] = [
   {
     id: '4',
     title: 'Backend Developer Intern',
+    company: 'CloudTech Systems',
     location: 'Pune, Maharashtra',
     stipend: 18000,
     applicantCount: 38,
@@ -60,6 +72,7 @@ export const mockInternships: Internship[] = [
   {
     id: '5',
     title: 'Marketing Intern',
+    company: 'BrandBoost Agency',
     location: 'Chennai, Tamil Nadu',
     stipend: 10000,
     applicantCount: 22,
@@ -78,6 +91,7 @@ export const mockApplicants: Applicant[] = [
     id: '1',
     name: 'Arjun Sharma',
     email: 'arjun.sharma@email.com',
+    phone: '+91 98765 43210',
     skills: ['React', 'JavaScript', 'HTML/CSS'],
     applicationDate: new Date('2024-01-16'),
     status: 'Under Review',
@@ -85,67 +99,84 @@ export const mockApplicants: Applicant[] = [
     internshipTitle: 'Frontend Developer Intern',
     experience: '1 year freelancing',
     education: 'B.Tech CSE, IIT Delhi',
-    resumeUrl: 'https://example.com/resume/arjun-sharma.pdf'
+    resumeUrl: 'https://example.com/resume/arjun-sharma.pdf',
+    canViewContactDetails: false  // Contact details hidden until offer acceptance
   },
   {
     id: '2',
     name: 'Priya Patel',
     email: 'priya.patel@email.com',
+    phone: '+91 87654 32109',
     skills: ['Python', 'Machine Learning', 'Pandas'],
     applicationDate: new Date('2024-01-12'),
     status: 'Hired',
     internshipId: '2',
     internshipTitle: 'Data Science Intern',
     experience: '2 projects during college',
-    education: 'M.Sc Data Science, BITS Pilani'
+    education: 'M.Sc Data Science, BITS Pilani',
+    canViewContactDetails: true,  // Can view contact details after hiring
+    offerSentDate: new Date('2024-01-18'),
+    offerResponseDate: new Date('2024-01-20')
   },
   {
     id: '3',
     name: 'Rahul Kumar',
     email: 'rahul.kumar@email.com',
+    phone: '+91 76543 21098',
     skills: ['Figma', 'Photoshop', 'User Research'],
     applicationDate: new Date('2024-01-09'),
-    status: 'Pending',
+    status: 'Applied',
     internshipId: '3',
     internshipTitle: 'UI/UX Design Intern',
     experience: 'Design club lead',
-    education: 'B.Des, NID Ahmedabad'
+    education: 'B.Des, NID Ahmedabad',
+    canViewContactDetails: false
   },
   {
     id: '4',
     name: 'Sneha Reddy',
     email: 'sneha.reddy@email.com',
+    phone: '+91 65432 10987',
     skills: ['Node.js', 'Express', 'MongoDB'],
     applicationDate: new Date('2024-01-07'),
     status: 'Rejected',
     internshipId: '4',
     internshipTitle: 'Backend Developer Intern',
     experience: '6 months internship',
-    education: 'B.E CSE, VIT Vellore'
+    education: 'B.E CSE, VIT Vellore',
+    canViewContactDetails: false
   },
   {
     id: '5',
     name: 'Vikash Singh',
     email: 'vikash.singh@email.com',
+    phone: '+91 54321 09876',
     skills: ['Digital Marketing', 'SEO', 'Content Writing'],
     applicationDate: new Date('2024-01-21'),
-    status: 'Under Review',
+    status: 'Offered',
     internshipId: '5',
     internshipTitle: 'Marketing Intern',
     experience: 'Blogging for 2 years',
-    education: 'MBA Marketing, XLRI Jamshedpur'
+    education: 'MBA Marketing, XLRI Jamshedpur',
+    canViewContactDetails: false,
+    offerSentDate: new Date('2024-01-25'),
+    offerLetter: 'Congratulations! We would like to offer you the Marketing Intern position...'
   },
   {
     id: '6',
     name: 'Ananya Gupta',
     email: 'ananya.gupta@email.com',
+    phone: '+91 43210 98765',
     skills: ['React', 'TypeScript', 'Next.js'],
     applicationDate: new Date('2024-01-18'),
-    status: 'Pending',
+    status: 'Offer Accepted',
     internshipId: '1',
     internshipTitle: 'Frontend Developer Intern',
     experience: 'Open source contributor',
-    education: 'B.Tech IT, IIIT Hyderabad'
+    education: 'B.Tech IT, IIIT Hyderabad',
+    canViewContactDetails: true,  // Contact details available after acceptance
+    offerSentDate: new Date('2024-01-22'),
+    offerResponseDate: new Date('2024-01-24')
   }
 ];
 

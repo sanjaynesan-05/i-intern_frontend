@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Navbar } from '../components/Navbar';
 import {
@@ -67,6 +68,17 @@ interface CompanyPlan {
 
 const PricingPage: React.FC = () => {
   const [pricingMode, setPricingMode] = useState<PricingMode>('intern');
+  const [searchParams] = useSearchParams();
+
+  // Handle URL parameters on component mount
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    if (typeParam === 'company') {
+      setPricingMode('company');
+    } else if (typeParam === 'intern') {
+      setPricingMode('intern');
+    }
+  }, [searchParams]);
 
   // Updated icon colors for a cohesive theme
   const primaryIconColor = "#1F7368";   // Deep Teal

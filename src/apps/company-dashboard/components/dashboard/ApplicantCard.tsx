@@ -4,19 +4,21 @@ import { Mail, Calendar, Briefcase } from 'lucide-react';
 import { Card, CardContent } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { formatDate, getStatusColor } from '@/shared/lib/utils';
-import { Applicant } from '../../types';
+import { Applicant } from '@/shared/types';
 import { Skeleton } from '../ui/Skeleton';
 
 interface ApplicantCardProps {
   applicant: Applicant;
   isLoading?: boolean;
   index?: number;
+  onClick?: (applicant: Applicant) => void;
 }
 
 export const ApplicantCard: React.FC<ApplicantCardProps> = ({
   applicant,
   isLoading = false,
   index = 0,
+  onClick,
 }) => {
   if (isLoading) {
     return (
@@ -49,7 +51,7 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
       whileHover={{ scale: 1.02 }}
     >
       <Card className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer">
-        <CardContent className="p-0">
+        <CardContent className="p-0" onClick={() => onClick?.(applicant)}>
           <div className="space-y-3">
             <div className="flex items-start justify-between">
               <div className="flex space-x-3">
@@ -62,7 +64,13 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
                   <h4 className="font-semibold text-gray-900">{applicant.name}</h4>
                   <div className="flex items-center space-x-1 text-sm text-gray-600">
                     <Mail className="w-3 h-3" />
-                    <span className="line-clamp-1">{applicant.email}</span>
+                    {applicant.canViewContactDetails ? (
+                      <span className="line-clamp-1">{applicant.email}</span>
+                    ) : (
+                      <span className="line-clamp-1 italic text-gray-500">
+                        Contact details protected
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
