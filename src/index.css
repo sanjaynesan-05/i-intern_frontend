@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* i-Intern Unified Design System */
+
+@layer base {
+  :root {
+    /* Core Background & Text */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 27%;
+
+    /* Card System - Enhanced with gradients */
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+    --card-gradient: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 20% 99%) 100%);
+
+    /* Interactive Elements */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+
+    /* Primary - Beautiful Blue with variants */
+    --primary: 213 94% 68%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 213 94% 63%;
+    --primary-glow: 213 94% 85%;
+    --primary-gradient: linear-gradient(135deg, hsl(213 94% 68%) 0%, hsl(213 94% 75%) 100%);
+
+    /* Secondary - Elevated Slate */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 215 25% 27%;
+    --secondary-gradient: linear-gradient(135deg, hsl(210 20% 96%) 0%, hsl(210 20% 98%) 100%);
+
+    /* Muted Elements */
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 10% 55%;
+
+    /* Accent - Vibrant Success */
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
+    --accent-gradient: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 42%) 100%);
+
+    /* Status Colors - Enhanced */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --success-glow: 142 76% 85%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-glow: 38 92% 85%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-glow: 0 84% 85%;
+
+    /* Borders & Inputs */
+    --border: 215 20% 87%;
+    --input: 215 20% 87%;
+    --ring: 213 94% 68%;
+
+    /* Beautiful Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(215 25% 27% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(215 25% 27% / 0.1), 0 2px 4px -2px hsl(215 25% 27% / 0.05);
+    --shadow-lg: 0 10px 15px -3px hsl(215 25% 27% / 0.1), 0 4px 6px -4px hsl(215 25% 27% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(215 25% 27% / 0.1), 0 8px 10px -6px hsl(215 25% 27% / 0.05);
+    --shadow-glow: 0 0 20px hsl(213 94% 68% / 0.3);
+    --shadow-card: 0 1px 3px hsl(215 25% 27% / 0.12), 0 1px 2px hsl(215 25% 27% / 0.24);
+    --shadow-elevated: 0 4px 12px hsl(215 25% 27% / 0.15), 0 2px 4px hsl(215 25% 27% / 0.10);
+
+    /* Layout */
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+
+    /* Admin Sidebar - Enhanced */
+    --sidebar-background: 215 25% 15%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 213 94% 68%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 25% 20%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 215 25% 25%;
+    --sidebar-ring: 213 94% 68%;
+    --sidebar-gradient: linear-gradient(180deg, hsl(215 25% 15%) 0%, hsl(215 25% 12%) 100%);
+
+    /* Dashboard Cards - Enhanced */
+    --dashboard-card-bg: 0 0% 100%;
+    --dashboard-metric: 213 94% 68%;
+    --dashboard-success: 142 76% 36%;
+    --dashboard-warning: 38 92% 50%;
+    --dashboard-card-gradient: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 20% 99%) 100%);
+
+    /* Status Badge Colors */
+    --status-verified: 142 76% 36%;
+    --status-pending: 38 92% 50%;
+    --status-suspended: 0 84% 60%;
+    --status-active: 213 94% 68%;
+
+    /* Chart Colors */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* Animation Variables */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-fast: all 0.15s ease-out;
+  }
+
+  .dark {
+    --background: 215 25% 8%;
+    --foreground: 210 20% 98%;
+    --card: 215 25% 12%;
+    --card-foreground: 210 20% 98%;
+    --card-gradient: linear-gradient(135deg, hsl(215 25% 12%) 0%, hsl(215 25% 15%) 100%);
+    --shadow-card: 0 1px 3px hsl(0 0% 0% / 0.5), 0 1px 2px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 4px 12px hsl(0 0% 0% / 0.4), 0 2px 4px hsl(0 0% 0% / 0.2);
+
+    --muted: 215 25% 20%;
+    --muted-foreground: 215 10% 70%;
+    --border: 215 25% 25%;
+    --input: 215 25% 25%;
+
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(210 20% 99%) 100%);
+    min-height: 100vh;
+  }
+
+  /* Beautiful scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+}
+
+@layer components {
+  /* Elevated Card */
+  .card-elevated {
+    background: var(--card-gradient);
+    box-shadow: var(--shadow-card);
+    border: 1px solid hsl(var(--border) / 0.5);
+    transition: var(--transition-smooth);
+  }
+
+  .card-elevated:hover {
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-1px);
+  }
+
+  /* Glow effect */
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 20px hsl(var(--success) / 0.3);
+  }
+
+  .glow-warning {
+    box-shadow: 0 0 20px hsl(var(--warning) / 0.3);
+  }
+
+  /* Gradient text */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Animated elements */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
