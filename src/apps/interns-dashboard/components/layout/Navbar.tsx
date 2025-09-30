@@ -40,34 +40,6 @@ export const Navbar = () => {
           <span className="text-xl font-bold text-foreground">InternHub</span>
         </Link>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          <Link
-            to="/about"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
-          >
-            About
-          </Link>
-          <Link
-            to="/blog"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
-          >
-            Blog
-          </Link>
-          <Link
-            to="/pricing"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
-          >
-            Pricing
-          </Link>
-          <Link
-            to="/contact"
-            className="text-muted-foreground hover:text-foreground transition-smooth"
-          >
-            Contact
-          </Link>
-        </div>
-
         {/* Profile Dropdown */}
         <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
           <DropdownMenuTrigger asChild>
@@ -91,15 +63,9 @@ export const Navbar = () => {
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/interns" className="w-full flex items-center">
+              <Link to="/interns/profile" className="w-full flex items-center">
                 <User className="mr-2 h-4 w-4" />
-                Dashboard
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/my-profile" className="w-full flex items-center">
-                <Settings className="mr-2 h-4 w-4" />
-                Profile
+                Edit Profile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

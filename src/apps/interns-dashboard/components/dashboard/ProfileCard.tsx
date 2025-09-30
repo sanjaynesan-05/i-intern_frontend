@@ -73,7 +73,7 @@ export const ProfileCard = () => {
             whileTap={{ scale: 0.98 }}
           >
             <Button
-              onClick={() => navigate("/build-resume")}
+              onClick={() => navigate("/resume")}
               className="w-full bg-gradient-primary hover:opacity-90 transition-smooth"
             >
               <FileText className="mr-2 h-4 w-4" />

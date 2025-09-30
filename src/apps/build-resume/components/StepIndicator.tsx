@@ -29,27 +29,27 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                   opacity: 1,
                   boxShadow:
                     index === currentStep
-                      ? '0 0 0 4px #63D7C7, 0 2px 12px 0 rgba(31,115,104,0.15)'
+                      ? '0 0 0 4px hsl(var(--primary)), 0 2px 12px 0 hsl(var(--primary) / 0.15)'
                       : index < currentStep
-                      ? '0 2px 8px 0 rgba(31,115,104,0.10)'
+                      ? '0 2px 8px 0 hsl(var(--primary) / 0.10)'
                       : 'none',
                   filter: index === currentStep ? 'brightness(1.08)' : 'none',
                 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer border-2 z-10 transition-shadow duration-300 ${
                   index < currentStep
-                    ? 'bg-primaryTeal text-white border-primaryTeal'
+                    ? 'bg-primary text-primary-foreground border-primary'
                     : index === currentStep
-                    ? 'bg-accentTeal text-white border-accentTeal'
-                    : 'bg-cream text-neutral border-aqua'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-muted text-muted-foreground border-border'
                 }`}
                 onClick={() => onStepClick(index)}
-                whileHover={{ scale: 1.08, boxShadow: '0 0 0 6px #B3EDEB' }}
+                whileHover={{ scale: 1.08, boxShadow: '0 0 0 6px hsl(var(--primary) / 0.2)' }}
                 whileTap={{ scale: 0.95 }}
               >
                 {index === currentStep && (
                   <motion.div
-                    className="absolute inset-0 rounded-full bg-accentTeal/40 blur-sm"
+                    className="absolute inset-0 rounded-full bg-primary/20 blur-sm"
                     style={{ zIndex: 0 }}
                     initial={{ opacity: 0.7, scale: 1 }}
                     animate={{
@@ -71,7 +71,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                   <span className="text-sm font-medium">{index + 1}</span>
                 )}
               </motion.div>
-              <span className="text-xs mt-2 text-center text-gray-600 truncate w-20 sm:w-auto">
+              <span className="text-xs mt-2 text-center text-muted-foreground truncate w-20 sm:w-auto">
                 {stepTitles[index]}
               </span>
             </div>
@@ -83,12 +83,15 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                 className={`flex-1 h-1 mx-1 sm:mx-2 rounded origin-left shadow-sm ${
                   index < currentStep - 1
-                    ? 'bg-primaryTeal'
+                    ? 'bg-primary'
                     : index === currentStep - 1
-                    ? 'bg-accentTeal'
-                    : 'bg-aqua'
+                    ? 'bg-primary'
+                    : 'bg-border'
                 }`}
-                style={{ minWidth: 16, boxShadow: index === currentStep - 1 ? '0 2px 8px #63D7C7' : undefined }}
+                style={{ 
+                  minWidth: 16, 
+                  boxShadow: index === currentStep - 1 ? '0 2px 8px hsl(var(--primary) / 0.3)' : undefined 
+                }}
               />
             )}
           </React.Fragment>

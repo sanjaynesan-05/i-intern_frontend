@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Search, X, MapPin, Star } from "lucide-react";
+import { Search, MapPin, Star } from "lucide-react";
 import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
 import { Badge } from "@/shared/components/ui/badge";
@@ -62,12 +62,6 @@ export const SearchOverlay = ({ isOpen, onClose }: SearchOverlayProps) => {
                 autoFocus
               />
             </div>
-            <button
-              onClick={onClose}
-              className="ml-4 p-2 hover:bg-muted rounded-lg transition-smooth"
-            >
-              <X className="h-5 w-5" />
-            </button>
           </div>
 
           {/* Results */}

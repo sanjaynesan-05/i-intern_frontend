@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Search, LogOut, Bot, Crown, Calendar } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { ProfileCard } from "../components/dashboard/ProfileCard";
@@ -7,12 +7,11 @@ import { ApplicationsTracker } from "../components/dashboard/ApplicationsTracker
 import { Recommendations } from "../components/dashboard/Recommendations";
 import { Offers } from "../components/dashboard/Offers";
 import { QuickStats } from "../components/dashboard/QuickStats";
-import { SearchOverlay } from "../components/dashboard/SearchOverlay";
 import { TrendingCompanies } from "../components/dashboard/TrendingCompanies";
 
 
 const DashboardPage = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     // Handle logout logic
@@ -38,7 +37,7 @@ const DashboardPage = () => {
               whileTap={{ scale: 0.98 }}
             >
               <Button
-                onClick={() => alert("Premium features coming soon!")}
+                onClick={() => navigate("/pricing")}
                 className="w-full h-10 bg-gradient-to-r from-yellow-400 to-orange-500 hover:opacity-90 transition-smooth shadow-medium text-white"
               >
                 <Crown className="mr-2 h-4 w-4" />
@@ -46,7 +45,7 @@ const DashboardPage = () => {
               </Button>
             </motion.div>
             
-            {/* Calendar/Interviews Button - High Priority */}
+            {/* A.U.R.A Button - High Priority */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -55,12 +54,11 @@ const DashboardPage = () => {
               whileTap={{ scale: 0.98 }}
             >
               <Button
-                onClick={() => alert("Calendar feature coming soon!")}
-                variant="outline"
-                className="w-full h-12 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                onClick={() => navigate("/aura")}
+                className="w-full h-12 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
               >
-                <Calendar className="mr-2 h-4 w-4" />
-                Calendar & Interviews
+                <Bot className="mr-2 h-4 w-4" />
+                A.U.R.A AI
               </Button>
             </motion.div>
             
@@ -68,7 +66,7 @@ const DashboardPage = () => {
             
             {/* Secondary Tools */}
             <div className="space-y-4">
-              {/* A.U.R.A Button */}
+              {/* Calendar/Interviews Button */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -77,11 +75,12 @@ const DashboardPage = () => {
                 whileTap={{ scale: 0.98 }}
               >
                 <Button
-                  onClick={() => alert("A.U.R.A coming soon!")}
-                  className="w-full h-10 bg-gradient-secondary hover:opacity-90 transition-smooth shadow-medium"
+                  onClick={() => alert("Calendar feature coming soon!")}
+                  variant="outline"
+                  className="w-full h-10 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 >
-                  <Bot className="mr-2 h-4 w-4" />
-                  A.U.R.A AI
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Calendar & Interviews
                 </Button>
               </motion.div>
             </div>
@@ -115,7 +114,7 @@ const DashboardPage = () => {
               className="relative"
             >
               <Button
-                onClick={() => setIsSearchOpen(true)}
+                onClick={() => navigate("/interns/internships")}
                 className="w-full h-24 text-xl font-semibold bg-gradient-primary hover:opacity-90 transition-smooth shadow-elegant hover:shadow-glow border-0 relative overflow-hidden group"
               >
                 <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-r from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -139,12 +138,6 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Search Overlay */}
-      <SearchOverlay 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
-      />
     </div>
   );
 };

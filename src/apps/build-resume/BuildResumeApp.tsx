@@ -225,17 +225,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-10 border-b border-gray-200 pb-6 flex flex-col items-center">
-          <h1 className="text-3xl font-bold font-quicksand text-gray-900 tracking-wide mb-1">InternCV</h1>
-          <p className="text-gray-700 text-base font-manrope">Create your professional ATS-optimized resume in minutes</p>
+        <div className="mb-10 border-b border-border pb-6 flex flex-col items-center">
+          <h1 className="text-3xl font-bold font-quicksand text-foreground tracking-wide mb-1">InternCV</h1>
+          <p className="text-muted-foreground text-base font-manrope">Create your professional ATS-optimized resume in minutes</p>
         </div>
 
         {/* Main Content */}
         <div className="max-w-2xl mx-auto">
-          <div className="bg-gray-50 rounded-lg border border-gray-200 p-6">
+          <div className="bg-card rounded-lg border border-border p-6 shadow-soft">
             <StepIndicator
               currentStep={currentStep}
               totalSteps={STEP_TITLES.length}

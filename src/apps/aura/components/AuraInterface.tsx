@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Textarea } from '@/shared/components/ui/textarea';
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Progress } from '@/shared/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Badge } from '@/shared/components/ui/badge';
-import { Loader2, Send, CheckCircle, Brain, Shield, Target, Clock, Code, TrendingUp, History, Play, Pause, RotateCcw } from 'lucide-react';
+import { Loader2, Send, CheckCircle, Brain, Shield, Target, Clock, Code, TrendingUp, History, Play, Pause, RotateCcw, ArrowLeft, Search, Building2, MapPin, DollarSign, Calendar, Star, Award, Lightbulb, BookOpen } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
@@ -46,6 +47,21 @@ interface HistoricalAssessment {
   duration: number;
 }
 
+interface RecommendedInternship {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  salary: string;
+  duration: string;
+  skills: string[];
+  rating: number;
+  applicants: number;
+  matchScore: number;
+  description: string;
+}
+
 interface TimerState {
   timeRemaining: number;
   isActive: boolean;
@@ -59,7 +75,8 @@ enum View {
   ASSESSMENT = 'assessment', 
   ANALYSIS = 'analysis',
   EVALUATION = 'evaluation',
-  HISTORY = 'history'
+  HISTORY = 'history',
+  INTERNSHIPS = 'internships'
 }
 
 // Mock AI responses for different skills
@@ -92,6 +109,149 @@ const mockQuestions: { [skill: string]: string[] } = {
     "Describe Python's memory management and garbage collection.",
     "How would you implement a context manager in Python?"
   ]
+};
+
+// Mock internship recommendations based on skills
+const getRecommendedInternships = (skill: string, evaluation: EvaluationData): RecommendedInternship[] => {
+  const baseInternships: { [key: string]: RecommendedInternship[] } = {
+    javascript: [
+      {
+        id: '1',
+        title: 'Frontend Development Intern',
+        company: 'TechCorp Solutions',
+        location: 'Bangalore, India',
+        type: 'Full-time',
+        salary: '₹25,000/month',
+        duration: '6 months',
+        skills: ['JavaScript', 'React', 'HTML/CSS', 'Git'],
+        rating: 4.5,
+        applicants: 245,
+        matchScore: 92,
+        description: 'Join our dynamic frontend team to build cutting-edge web applications using modern JavaScript frameworks.'
+      },
+      {
+        id: '2',
+        title: 'Full Stack Developer Intern',
+        company: 'InnovateLabs',
+        location: 'Mumbai, India',
+        type: 'Hybrid',
+        salary: '₹30,000/month',
+        duration: '4 months',
+        skills: ['JavaScript', 'Node.js', 'MongoDB', 'Express'],
+        rating: 4.3,
+        applicants: 189,
+        matchScore: 88,
+        description: 'Work on both frontend and backend technologies to create comprehensive web solutions.'
+      }
+    ],
+    react: [
+      {
+        id: '3',
+        title: 'React Developer Intern',
+        company: 'Digital Dynamics',
+        location: 'Pune, India',
+        type: 'Remote',
+        salary: '₹28,000/month',
+        duration: '5 months',
+        skills: ['React', 'Redux', 'TypeScript', 'Jest'],
+        rating: 4.6,
+        applicants: 156,
+        matchScore: 95,
+        description: 'Build modern React applications with state-of-the-art tools and best practices.'
+      },
+      {
+        id: '4',
+        title: 'UI/UX Development Intern',
+        company: 'CreativeSpace',
+        location: 'Delhi, India',
+        type: 'Full-time',
+        salary: '₹26,000/month',
+        duration: '6 months',
+        skills: ['React', 'Figma', 'CSS3', 'Material-UI'],
+        rating: 4.4,
+        applicants: 203,
+        matchScore: 90,
+        description: 'Collaborate with designers to create beautiful and functional user interfaces.'
+      }
+    ],
+    python: [
+      {
+        id: '5',
+        title: 'Python Developer Intern',
+        company: 'DataTech Solutions',
+        location: 'Hyderabad, India',
+        type: 'Full-time',
+        salary: '₹32,000/month',
+        duration: '6 months',
+        skills: ['Python', 'Django', 'PostgreSQL', 'Docker'],
+        rating: 4.7,
+        applicants: 167,
+        matchScore: 94,
+        description: 'Develop scalable backend applications using Python and modern frameworks.'
+      },
+      {
+        id: '6',
+        title: 'Data Science Intern',
+        company: 'Analytics Pro',
+        location: 'Chennai, India',
+        type: 'Hybrid',
+        salary: '₹35,000/month',
+        duration: '4 months',
+        skills: ['Python', 'Pandas', 'NumPy', 'Machine Learning'],
+        rating: 4.8,
+        applicants: 134,
+        matchScore: 91,
+        description: 'Apply machine learning and data analysis techniques to solve real-world problems.'
+      }
+    ]
+  };
+
+  const skillKey = skill.toLowerCase();
+  let internships = baseInternships[skillKey] || [];
+
+  // If no specific internships for the skill, provide general tech internships
+  if (internships.length === 0) {
+    internships = [
+      {
+        id: 'general1',
+        title: `${skill} Development Intern`,
+        company: 'TechStart Solutions',
+        location: 'Bangalore, India',
+        type: 'Full-time',
+        salary: '₹25,000/month',
+        duration: '5 months',
+        skills: [skill, 'Problem Solving', 'Communication'],
+        rating: 4.2,
+        applicants: 98,
+        matchScore: 85,
+        description: `Apply your ${skill} skills in a fast-paced startup environment.`
+      },
+      {
+        id: 'general2',
+        title: `Junior ${skill} Developer`,
+        company: 'Innovation Hub',
+        location: 'Mumbai, India',
+        type: 'Hybrid',
+        salary: '₹28,000/month',
+        duration: '6 months',
+        skills: [skill, 'Git', 'Agile', 'Testing'],
+        rating: 4.0,
+        applicants: 142,
+        matchScore: 82,
+        description: `Join our team to develop innovative solutions using ${skill}.`
+      }
+    ];
+  }
+
+  // Adjust match scores based on evaluation performance
+  const avgScore = (evaluation.intellectualMetrics.problemSolving + 
+                   evaluation.intellectualMetrics.reasoning + 
+                   evaluation.intellectualMetrics.clarity) / 3;
+
+  return internships.map(internship => ({
+    ...internship,
+    matchScore: Math.min(100, Math.round(internship.matchScore * (avgScore / 100) + (avgScore * 0.1)))
+  })).sort((a, b) => b.matchScore - a.matchScore);
 };
 
 // Mock AI response function
@@ -162,6 +322,9 @@ const getAssessmentHistory = (): HistoricalAssessment[] => {
 };
 
 const AuraInterface: React.FC = () => {
+  // Navigation
+  const navigate = useNavigate();
+  
   // State management
   const [currentView, setCurrentView] = useState<View>(View.SKILL_SELECTION);
   const [skill, setSkill] = useState('');
@@ -171,6 +334,7 @@ const AuraInterface: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [evaluation, setEvaluation] = useState<EvaluationData | null>(null);
   const [assessmentHistory, setAssessmentHistory] = useState<HistoricalAssessment[]>([]);
+  const [recommendedInternships, setRecommendedInternships] = useState<RecommendedInternship[]>([]);
   
   // Timer state
   const [timer, setTimer] = useState<TimerState>({
@@ -310,6 +474,10 @@ const AuraInterface: React.FC = () => {
     setIsAnalyzing(false);
     setCurrentView(View.EVALUATION);
     
+    // Generate internship recommendations
+    const internships = getRecommendedInternships(skill, evalData);
+    setRecommendedInternships(internships);
+    
     // Stop timer
     resetTimer();
   };
@@ -414,9 +582,15 @@ const AuraInterface: React.FC = () => {
     setIsAiThinking(false);
     setIsAnalyzing(false);
     setEvaluation(null);
+    setRecommendedInternships([]);
     setShowCodeEditor(false);
     setAssessmentStartTime(null);
     resetTimer();
+  };
+
+  // Show internships
+  const showInternships = () => {
+    setCurrentView(View.INTERNSHIPS);
   };
 
   // Show history
@@ -479,6 +653,16 @@ const AuraInterface: React.FC = () => {
   // Render skill selection view
   const renderSkillSelection = () => (
     <div className="min-h-screen bg-gradient-to-br from-aura-bg-dark via-aura-bg-card to-aura-bg-dark flex items-center justify-center p-4">
+      {/* Back Button */}
+      <Button
+        onClick={() => navigate('/interns')}
+        variant="ghost"
+        className="absolute top-4 left-4 text-aura-text-muted hover:text-aura-text-primary hover:bg-aura-bg-input"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Dashboard
+      </Button>
+      
       <Card className="w-full max-w-md bg-aura-card border-aura-border shadow-aura">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-gradient-aura rounded-full flex items-center justify-center">
@@ -537,11 +721,22 @@ const AuraInterface: React.FC = () => {
       {/* Header */}
       <div className="bg-aura-bg-card border-b border-aura-border p-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-aura-text-primary">
-              {skill} Assessment
-            </h1>
-            <p className="text-sm text-aura-text-muted">A.U.R.A. Skill Verification</p>
+          <div className="flex items-center space-x-4">
+            <Button
+              onClick={() => navigate('/interns')}
+              variant="ghost"
+              size="sm"
+              className="text-aura-text-muted hover:text-aura-text-primary hover:bg-aura-bg-input"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+            <div>
+              <h1 className="text-xl font-bold text-aura-text-primary">
+                {skill} Assessment
+              </h1>
+              <p className="text-sm text-aura-text-muted">A.U.R.A. Skill Verification</p>
+            </div>
           </div>
           <TimerDisplay />
         </div>
@@ -1049,6 +1244,13 @@ const AuraInterface: React.FC = () => {
               Start New Assessment
             </Button>
             <Button
+              onClick={() => setCurrentView(View.INTERNSHIPS)}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3"
+            >
+              <Search className="w-4 h-4 mr-2" />
+              Discover Internships
+            </Button>
+            <Button
               onClick={showHistory}
               variant="outline"
               className="border-aura-border text-aura-text-muted hover:text-aura-text-primary hover:bg-aura-bg-input px-8 py-3"
@@ -1057,6 +1259,145 @@ const AuraInterface: React.FC = () => {
               View History
             </Button>
           </div>
+
+          {/* Enhanced Insights Section */}
+          <Card className="bg-aura-card border-aura-border shadow-aura">
+            <CardHeader>
+              <CardTitle className="text-aura-text-primary flex items-center space-x-2">
+                <Lightbulb className="w-5 h-5 text-aura-primary" />
+                <span>AI-Powered Insights & Recommendations</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Strengths */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-aura-text-primary flex items-center space-x-2">
+                    <Star className="w-4 h-4 text-yellow-500" />
+                    <span>Key Strengths</span>
+                  </h4>
+                  <div className="space-y-2">
+                    {evaluation.intellectualMetrics.problemSolving >= 80 && (
+                      <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                        <p className="text-sm text-green-400">
+                          <strong>Excellent Problem Solving:</strong> You demonstrate strong analytical thinking and can break down complex problems effectively.
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.intellectualMetrics.reasoning >= 85 && (
+                      <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                        <p className="text-sm text-blue-400">
+                          <strong>Superior Reasoning:</strong> Your logical thinking and ability to connect concepts is impressive.
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.intellectualMetrics.clarity >= 75 && (
+                      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+                        <p className="text-sm text-purple-400">
+                          <strong>Clear Communication:</strong> You explain concepts clearly and structure your thoughts well.
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.intellectualMetrics.codeQuality && evaluation.intellectualMetrics.codeQuality >= 80 && (
+                      <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
+                        <p className="text-sm text-cyan-400">
+                          <strong>High Code Quality:</strong> Your coding practices show attention to detail and best practices.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Areas for Improvement */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-aura-text-primary flex items-center space-x-2">
+                    <BookOpen className="w-4 h-4 text-orange-500" />
+                    <span>Growth Opportunities</span>
+                  </h4>
+                  <div className="space-y-2">
+                    {evaluation.intellectualMetrics.speed < 70 && (
+                      <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
+                        <p className="text-sm text-orange-400">
+                          <strong>Response Speed:</strong> Practice time-management and quick decision making to improve efficiency.
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.intellectualMetrics.clarity < 70 && (
+                      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                        <p className="text-sm text-yellow-400">
+                          <strong>Communication Clarity:</strong> Work on structuring explanations and using concrete examples.
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.intellectualMetrics.problemSolving < 70 && (
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+                        <p className="text-sm text-red-400">
+                          <strong>Problem Solving:</strong> Practice breaking down complex problems into smaller, manageable parts.
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.intellectualMetrics.codeQuality && evaluation.intellectualMetrics.codeQuality < 70 && (
+                      <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-lg p-3">
+                        <p className="text-sm text-indigo-400">
+                          <strong>Code Quality:</strong> Focus on writing cleaner, more maintainable code with proper documentation.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance Summary */}
+              <div className="bg-aura-bg-input rounded-lg p-4">
+                <h4 className="font-semibold text-aura-text-primary mb-3 flex items-center space-x-2">
+                  <Award className="w-4 h-4 text-aura-primary" />
+                  <span>Overall Assessment</span>
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-aura-primary">
+                      {Math.round((evaluation.intellectualMetrics.problemSolving + 
+                                 evaluation.intellectualMetrics.reasoning + 
+                                 evaluation.intellectualMetrics.clarity) / 3)}%
+                    </p>
+                    <p className="text-sm text-aura-text-muted">Overall Score</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-green-400">
+                      {evaluation.aiDetection.humanContentScore > 80 ? 'Verified' : 'Needs Review'}
+                    </p>
+                    <p className="text-sm text-aura-text-muted">Content Authenticity</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-blue-400">
+                      {Math.floor(evaluation.completionTime / 60)}:{(evaluation.completionTime % 60).toString().padStart(2, '0')}
+                    </p>
+                    <p className="text-sm text-aura-text-muted">Completion Time</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Skill Level Badge */}
+              <div className="text-center">
+                <div className="inline-flex items-center space-x-2 bg-gradient-aura rounded-full px-6 py-3">
+                  <Award className="w-5 h-5 text-aura-text-primary" />
+                  <span className="font-semibold text-aura-text-primary">
+                    {(() => {
+                      const avgScore = (evaluation.intellectualMetrics.problemSolving + 
+                                       evaluation.intellectualMetrics.reasoning + 
+                                       evaluation.intellectualMetrics.clarity) / 3;
+                      if (avgScore >= 90) return 'Expert Level';
+                      if (avgScore >= 80) return 'Advanced Level';
+                      if (avgScore >= 70) return 'Intermediate Level';
+                      if (avgScore >= 60) return 'Beginner Level';
+                      return 'Learning Level';
+                    })()}
+                  </span>
+                  <span className="text-aura-text-primary">in {evaluation.skill}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -1117,6 +1458,172 @@ const AuraInterface: React.FC = () => {
     </div>
   );
 
+  // Render internships view
+  const renderInternships = () => (
+    <div className="min-h-screen bg-aura-bg-dark p-4">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
+        <Card className="bg-aura-card border-aura-border shadow-aura">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-aura-text-primary flex items-center space-x-2">
+                  <Search className="w-5 h-5 text-aura-primary" />
+                  <span>Recommended Internships</span>
+                </CardTitle>
+                <p className="text-aura-text-muted mt-2">
+                  Based on your {evaluation?.skill} assessment • {recommendedInternships.length} opportunities found
+                </p>
+              </div>
+              <div className="flex space-x-2">
+                <Button
+                  onClick={() => setCurrentView(View.EVALUATION)}
+                  variant="outline"
+                  className="border-aura-border text-aura-text-muted hover:text-aura-text-primary hover:bg-aura-bg-input"
+                >
+                  Back to Results
+                </Button>
+                <Button
+                  onClick={() => navigate('/interns')}
+                  className="bg-gradient-aura hover:bg-aura-primary-dark text-aura-text-primary"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Dashboard
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* Internship Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {recommendedInternships.map((internship) => (
+            <Card key={internship.id} className="bg-aura-card border-aura-border shadow-aura hover:shadow-xl transition-all duration-300">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-aura-text-primary text-lg mb-2">
+                      {internship.title}
+                    </CardTitle>
+                    <div className="flex items-center space-x-2 text-aura-text-muted">
+                      <Building2 className="w-4 h-4" />
+                      <span className="font-medium">{internship.company}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-aura-text-muted mt-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>{internship.location}</span>
+                      <span>•</span>
+                      <span>{internship.type}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center space-x-1 mb-2">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span className="text-sm text-aura-text-muted">{internship.rating}</span>
+                    </div>
+                    <Badge 
+                      className={`${
+                        internship.matchScore >= 90 ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                        internship.matchScore >= 80 ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                        'bg-orange-500/20 text-orange-400 border-orange-500/30'
+                      }`}
+                    >
+                      {internship.matchScore}% Match
+                    </Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-aura-text-muted text-sm">
+                  {internship.description}
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <DollarSign className="w-4 h-4 text-green-500" />
+                    <span className="text-sm text-aura-text-primary font-medium">
+                      {internship.salary}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm text-aura-text-primary">
+                      {internship.duration}
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-aura-text-muted mb-2">Required Skills:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {internship.skills.map((skill, index) => (
+                      <Badge 
+                        key={index}
+                        variant="secondary"
+                        className="bg-aura-bg-input text-aura-text-primary border-aura-border text-xs"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-aura-border">
+                  <div className="flex items-center space-x-2 text-sm text-aura-text-muted">
+                    <span>{internship.applicants} applicants</span>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-aura-border text-aura-text-muted hover:text-aura-text-primary hover:bg-aura-bg-input"
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-gradient-aura hover:bg-aura-primary-dark text-aura-text-primary"
+                      onClick={() => alert(`Applying to ${internship.title} at ${internship.company}`)}
+                    >
+                      Apply Now
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Call to Action */}
+        <Card className="bg-gradient-to-r from-aura-primary/10 to-aura-primary-light/10 border-aura-primary/30">
+          <CardContent className="text-center py-8">
+            <h3 className="text-xl font-bold text-aura-text-primary mb-2">
+              Ready to Apply?
+            </h3>
+            <p className="text-aura-text-muted mb-4">
+              Take another assessment to improve your profile or explore more opportunities
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Button
+                onClick={startNewAssessment}
+                className="bg-gradient-aura hover:bg-aura-primary-dark text-aura-text-primary"
+              >
+                Take Another Assessment
+              </Button>
+              <Button
+                onClick={() => navigate('/interns')}
+                variant="outline"
+                className="border-aura-border text-aura-text-muted hover:text-aura-text-primary hover:bg-aura-bg-input"
+              >
+                Browse All Internships
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
   // Main render
   switch (currentView) {
     case View.SKILL_SELECTION:
@@ -1129,6 +1636,8 @@ const AuraInterface: React.FC = () => {
       return renderEvaluation();
     case View.HISTORY:
       return renderHistory();
+    case View.INTERNSHIPS:
+      return renderInternships();
     default:
       return renderSkillSelection();
   }
