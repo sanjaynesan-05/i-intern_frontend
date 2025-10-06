@@ -7,6 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Progress } from '@/shared/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Badge } from '@/shared/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
 import { Loader2, Send, CheckCircle, Brain, Shield, Target, Clock, Code, TrendingUp, History, Play, Pause, RotateCcw, ArrowLeft, Search, Building2, MapPin, DollarSign, Calendar, Star, Award, Lightbulb, BookOpen } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
@@ -79,8 +86,9 @@ enum View {
   INTERNSHIPS = 'internships'
 }
 
-// Mock AI responses for different skills
-const mockQuestions: { [skill: string]: string[] } = {
+// Internship options for dropdown
+// Mock questions for each skill
+const mockQuestions: { [key: string]: string[] } = {
   default: [
     "Can you explain the fundamental concepts of this skill?",
     "Describe a challenging problem you've solved using this skill.",
@@ -110,6 +118,19 @@ const mockQuestions: { [skill: string]: string[] } = {
     "How would you implement a context manager in Python?"
   ]
 };
+const internshipOptions = [
+  { value: 'frontend', label: 'Frontend Intern', skills: ['JavaScript', 'React', 'HTML', 'CSS', 'TypeScript'] },
+  { value: 'backend', label: 'Backend Intern', skills: ['Node.js', 'Python', 'Java', 'API', 'Database'] },
+  { value: 'database', label: 'Database Intern', skills: ['SQL', 'MongoDB', 'PostgreSQL', 'Database Design'] },
+  { value: 'software-development', label: 'Software Development Intern', skills: ['Programming', 'Algorithms', 'Data Structures', 'Git'] },
+  { value: 'web-development', label: 'Web Development Intern', skills: ['HTML', 'CSS', 'JavaScript', 'Web Technologies'] },
+  { value: 'cybersecurity', label: 'Cybersecurity Analyst Intern', skills: ['Security', 'Networking', 'Ethical Hacking', 'Risk Assessment'] },
+  { value: 'data-science', label: 'Data Science/Analytics Intern', skills: ['Python', 'Statistics', 'Machine Learning', 'Data Analysis'] },
+  { value: 'ai-ml', label: 'AI/Machine Learning Engineer Intern', skills: ['Python', 'TensorFlow', 'PyTorch', 'Machine Learning'] },
+  { value: 'ui-ux', label: 'UI/UX Design Intern', skills: ['Figma', 'Adobe XD', 'User Research', 'Prototyping'] },
+  { value: 'cloud-computing', label: 'Cloud Computing Intern', skills: ['AWS', 'Azure', 'Docker', 'Kubernetes'] }
+];
+
 
 // Mock internship recommendations based on skills
 const getRecommendedInternships = (skill: string, evaluation: EvaluationData): RecommendedInternship[] => {
@@ -662,7 +683,6 @@ const AuraInterface: React.FC = () => {
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Dashboard
       </Button>
-      
       <Card className="w-full max-w-md bg-aura-card border-aura-border shadow-aura">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-gradient-aura rounded-full flex items-center justify-center">
@@ -678,19 +698,24 @@ const AuraInterface: React.FC = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <label htmlFor="skill-input" className="text-sm font-medium text-aura-text-primary">
-              What skill would you like to be assessed on?
+            <label htmlFor="skill-dropdown" className="text-sm font-medium text-aura-text-primary">
+              Select the internship role you want to be assessed for:
             </label>
-            <Input
-              ref={inputRef}
-              id="skill-input"
-              type="text"
-              placeholder="e.g., JavaScript, React, Python, Data Analysis..."
+            <Select
               value={skill}
-              onChange={(e) => setSkill(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="bg-aura-bg-input border-aura-border text-aura-text-primary placeholder:text-aura-text-muted focus:ring-aura-primary"
-            />
+              onValueChange={(value) => setSkill(value)}
+            >
+              <SelectTrigger id="skill-dropdown" className="bg-aura-bg-input border-aura-border text-aura-text-primary focus:ring-aura-primary">
+                <SelectValue placeholder="Choose an internship role..." />
+              </SelectTrigger>
+              <SelectContent>
+                {internshipOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.label}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex space-x-3">
             <Button
